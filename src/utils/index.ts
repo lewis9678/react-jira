@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export const isFalsy = (value: any) => (value === 0 ? false : !value);
+export const isFalsy = (value: unknown) => (value === 0 ? false : !value);
 
 export const cleanObject = (object: object) => {
   const result: any = { ...object };
@@ -20,7 +20,7 @@ export const useMount = (callback: () => void) => {
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 };
 
-export const useDebounce = (value: any, delay?: number) => {
+export const useDebounce = <T>(value: T, delay?: number) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {
@@ -33,17 +33,25 @@ export const useDebounce = (value: any, delay?: number) => {
   return debouncedValue;
 };
 
-// export const useDebounce = (value, delay) => {
-//   let [debounceValue, setDebounceValue] = useState(value);
-//   useEffect(() => {
-//     const timeout = setTimeout(() => {
-//       setDebounceValue(value);
-//     }, delay);
-//     return () => clearTimeout(timeout);
-//   }, [value, delay]);
-
-//   return debounceValue;
-// };
+// const { value, clear, removeIndex, add } = useArray(persons);
+export const useArray = <T>(array: T[]) => {
+  const [value, setValue] = useState(array);
+  return {
+    value,
+    setValue,
+    clear() {
+      setValue([]);
+    },
+    removeIndex(index: number) {
+      const copy = [...value];
+      copy.splice(index, 1);
+      setValue(copy);
+    },
+    add(item: T) {
+      setValue([...value, item]);
+    },
+  };
+};
 
 // export const useDounce = (func, delay) => {
 //   let timeout;
