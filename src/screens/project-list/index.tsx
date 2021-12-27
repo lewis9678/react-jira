@@ -1,9 +1,8 @@
-import qs from "qs";
 import { SearchPanel } from "./search-pannel";
 import { List } from "./list";
 import { useState, useEffect } from "react";
 import { cleanObject, useMount, useDebounce } from "utils";
-const apiUrl = process.env.REACT_APP_API_URL;
+import { useHttp } from "utils/http";
 
 export const ProjectListScreen = () => {
   const [param, setParam] = useState({
@@ -12,23 +11,14 @@ export const ProjectListScreen = () => {
   });
   const [users, setUsers] = useState([]);
   const [list, setList] = useState([]);
-  const debounceParam = useDebounce(param, 1000);
+  const client = useHttp();
+  const debounceParam = useDebounce(param, 200);
   useEffect(() => {
-    fetch(
-      `${apiUrl}/projects?${qs.stringify(cleanObject(debounceParam))}`
-    ).then(async (response) => {
-      if (response.ok) {
-        setList(await response.json());
-      }
-    });
-  }, [debounceParam]);
+    client("projects", { data: cleanObject(debounceParam) }).then(setList);
+  }, [debounceParam]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useMount(() => {
-    fetch(`${apiUrl}/users`).then(async (response) => {
-      if (response.ok) {
-        setUsers(await response.json());
-      }
-    });
+    client("users").then(setUsers);
   });
 
   return (
