@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 export const isVoid = (value: unknown) =>
   value === undefined || value === null || value === "";
@@ -54,6 +54,24 @@ export const useArray = <T>(array: T[]) => {
       setValue([...value, item]);
     },
   };
+};
+
+export const useDocumentTitle = (
+  title: string,
+  keepOnUnmount: boolean = true
+) => {
+  const oldTitle = useRef(document.title).current;
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
+  useEffect(() => {
+    return () => {
+      if (!keepOnUnmount) {
+        document.title = oldTitle;
+        console.log("卸载：" + oldTitle);
+      }
+    };
+  }, [keepOnUnmount, oldTitle]);
 };
 
 // export const useDounce = (func, delay) => {

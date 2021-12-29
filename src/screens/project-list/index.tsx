@@ -6,6 +6,8 @@ import styled from "@emotion/styled";
 import { Typography } from "antd";
 import { useProjects } from "utils/project";
 import { useUsers } from "utils/user";
+// import { Helmet } from "react-helmet";
+import { useDocumentTitle } from "utils";
 
 export const ProjectListScreen = () => {
   const [param, setParam] = useState({
@@ -15,9 +17,13 @@ export const ProjectListScreen = () => {
   const debounceParam = useDebounce(param, 200);
   const { isLoading, error, data: list } = useProjects(debounceParam);
   const { data: users } = useUsers();
+  useDocumentTitle("项目列表", false);
 
   return (
     <Container>
+      {/* <Helmet>
+        <title>项目列表</title>
+      </Helmet> */}
       <h1>项目列表</h1>
       <SearchPanel users={users || []} param={param} setParam={setParam} />
       {error ? (
