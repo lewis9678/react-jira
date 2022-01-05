@@ -68,11 +68,12 @@ export const useDocumentTitle = (
     return () => {
       if (!keepOnUnmount) {
         document.title = oldTitle;
-        console.log("卸载：" + oldTitle);
       }
     };
   }, [keepOnUnmount, oldTitle]);
 };
+
+export const resetRoute = () => (window.location.href = window.location.origin);
 
 // export const useDounce = (func, delay) => {
 //   let timeout;
