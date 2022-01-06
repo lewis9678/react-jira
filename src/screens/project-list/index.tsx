@@ -8,12 +8,13 @@ import { useProjects } from "utils/project";
 import { useUsers } from "utils/user";
 // import { Helmet } from "react-helmet";
 import { useDocumentTitle } from "utils";
+import { useUrlQueryParam } from "utils/url";
+
+type keysType = ("name" | "personId")[];
 
 export const ProjectListScreen = () => {
-  const [param, setParam] = useState({
-    name: "",
-    personId: "",
-  });
+  const [keys] = useState<keysType>(["name", "personId"]);
+  const [param, setParam] = useUrlQueryParam(keys);
   const debounceParam = useDebounce(param, 200);
   const { isLoading, error, data: list } = useProjects(debounceParam);
   const { data: users } = useUsers();
@@ -37,3 +38,5 @@ export const ProjectListScreen = () => {
 const Container = styled.div`
   padding: 3.2rem;
 `;
+
+ProjectListScreen.whyDidYouRender = false;
